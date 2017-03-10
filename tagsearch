@@ -1,0 +1,17 @@
+#!/bin/bash
+#This is the utility for searching tags. It makes a folder
+#with links to pictures containing all tags
+
+for i in "$@"; do
+    LIST=("${LIST[@]}" `ls $i`)
+done
+
+readarray -t RESULTS < <(uniq -c  < <(printf '%s\n' "${LIST[@]}" | sort) \
+    | grep $# | sed 's/\s*[0-9]*\s//')
+
+rm searchres/* 2> /dev/null
+
+for i in "${RESULTS[@]}"; do
+    ln -rs ${RESULTS[i]} searchres
+done
+
