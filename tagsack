@@ -1,8 +1,0 @@
-#!/bin/bash
-#This utility 'tags' files by symlinking them to a directory with the name of
-#the tag
-
-for i in "${@:2}"; do
-    mkdir $i 2> /dev/null
-    ln -rs $1 $i
-done
