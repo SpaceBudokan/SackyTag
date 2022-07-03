@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. ~/.config/sackytag/sackytag.conf
+
+
+for i in "$@"; do
+    base=$(basename "$i")
+    ln -s "$i" $SACKYTAG_VAULT/"$base" && ln -s $SACKYTAG_VAULT/"$base" $SACKYTAG_TAGS/st_untagged
+done
