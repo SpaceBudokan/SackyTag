@@ -1,0 +1,14 @@
+#!/bin/sh
+
+#Folder where your images will go
+SACKYTAG_VAULT=~/stvault
+
+#Folder for tags
+SACKYTAG_TAGS=~/sttags
+
+#Folder for search results
+SACKYTAG_RESULTS=~/stresults
+
+SHARESULTS=y
+
+IMAGE_VIEWER="sxiv -a"
