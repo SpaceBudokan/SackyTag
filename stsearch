@@ -1,17 +1,25 @@
-#!/bin/bash
-#This is the utility for searching tags. It makes a folder
-#with links to pictures containing all tags
+#!/bin/sh
+#This is the utility for finding images that match all tags.
 
-for i in "$@"; do
-    LIST=("${LIST[@]}" `ls $i`)
-done
+. ~/.config/sackytag/sackytag.conf
 
-readarray -t RESULTS < <(uniq -c  < <(printf '%s\n' "${LIST[@]}" | sort) \
-    | grep $# | sed 's/\s*[0-9]*\s//')
-
-rm searchres/* 2> /dev/null
-
-for i in "${RESULTS[@]}"; do
-    ln -rs ${RESULTS[i]} searchres
-done
-
+if [ $# = 1 ]; then
+    rm $SACKYTAG_RESULTS/* && ln -s $SACKYTAG_TAGS/$1/* $SACKYTAG_RESULTS
+else
+    for i in $@; do
+	for j in $SACKYTAG_TAGS/$i/*; do
+	    LIST="$LIST $(basename $j)"	       
+	done
+	if [ "$i" != "$1" ]; then
+	   LIST=$(printf "%s\n" $LIST | sort | uniq -d)
+	fi
+    done
+    rm $SACKYTAG_RESULTS/* 2>/dev/null
+    for i in $LIST; do
+	EXTENSION=$i
+	EXTENSION=$(printf "%s" $EXTENSION | grep "\.")
+	EXTENSION=${EXTENSION##*.}
+	SHANAME=$(sha256sum "$SACKYTAG_VAULT/$i" | awk '{print $1}')${EXTENSION:+.$EXTENSION}
+      	ln -s $SACKYTAG_VAULT/$i $SACKYTAG_RESULTS/$SHANAME
+    done
+fi
